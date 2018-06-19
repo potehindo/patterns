@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div id="root" style="width: 300px;"></div>
+        <style>
+            /* стили для input */
+            .error-validate {
+                border: 1px solid red;
+            }
+
+            /* стили для декоратора символа очистки инпута */
+            .clearable-input__wrapper {
+                position: relative;
+            }
+
+            .clearable-input__cross {
+                position: absolute;
+                right: 0;
+                top: 50%;
+            }
+        </style>
+        <script src="./Input.js"></script>
+        <script src="./AbstractDecorator.js"></script>
+        <script src="./Clearable.js"></script>
+        <script src="./Validate.js"></script>
+
+        <script>
+            function addSeparator() {
+                return document.createElement('br');
+            }
+
+            function appendChild(wrapper, func) {
+                return wrapper.appendChild(func());
+            }
+
+            var App = (function(element) {
+
+                var simpleInput = new Input({
+                    label: "Simple input"
+                });
+                // ----------------------------
+                var validatedInput = new ValidatedInput(
+                    new Input({
+                        label: "Validated input"
+                    })
+                );
+                validatedInput.setMask(/[0-9]/);
+                // ----------------------------
+                var clearableInput = new ClearableInput(
+                    new Input({
+                        label: "Clearable input"
+                    })
+                );
+                // ----------------------------
+                var clearableAndValidateInput = new ValidatedInput(
+                    new ClearableInput(
+                        new Input({
+                            label: "Validate and clearable input"
+                        })
+                    )
+                );
+                clearableAndValidateInput.setMask(/[0-9]/);
+                clearableAndValidateInput.setErrorClassName('error-validate');
+
+                var wrapper = document.createElement('div');
+                wrapper.appendChild(simpleInput.render());
+                appendChild(wrapper, addSeparator);
+
+                wrapper.appendChild(validatedInput.render());
+                appendChild(wrapper, addSeparator);
+
+                wrapper.appendChild(clearableAndValidateInput.render());
+                appendChild(wrapper, addSeparator);
+                wrapper.appendChild(clearableInput.render());
+
+                element.appendChild(wrapper);
+            }(document.getElementById('root')));
+        </script>
+    </body>
+</html>
